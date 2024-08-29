@@ -14,3 +14,11 @@ source code for SplitFed
 ### library
 
 customed from flwr 0.17.0
+
+### installation
+
+1. Download and install flwr (replace by the customized flwr)
+2. install torch: conda install pytorch==1.12.0 torchvision==0.13.0 torchaudio==0.12.0 cudatoolkit=11.6 -c pytorch -c conda-forge
+3. install numpy: pip install numpy==1.22.0
+4. run server: python server.py
+5. run client: python client.py 0
