@@ -21,12 +21,12 @@ num_data = conf['num_data'] # *32 per client, data chunk
 batch_dize=conf['batch_size']
 clientID = sys.argv[1]
 
-# round내에 여러 epoch존재
-# epoch마다 통신 필요
-# client에서 가능한 1epoch데이터 모아서 통신
+# round
+# epoch
+# client
 
 # ######################################################
-# 데이터 로더
+# data loader
 # ######################################################
 def load_data():
   #data loader
@@ -37,7 +37,7 @@ def load_data():
   return trainloader
 
 # ######################################################
-# 데이터 학습
+# train
 # ######################################################
 def train(trainloader, epochs):
   net.eval()
@@ -65,7 +65,7 @@ def main():
     # Flower client
     class FLClient(fl.client.NumPyClient):
         def get_parameters(self):
-            # 최초 client weight init에 필요
+            #  client weight init
             print('@get_parameters :',time.time())
             return [val.cpu().numpy() for _, val in net.state_dict().items()]
             
@@ -79,7 +79,7 @@ def main():
             print('@round:',config['rnd'])
             self.set_parameters(parameters)
             print('@fit :',time.time())
-            # 데이터 불러오기
+            # load data
             train_loader = load_data()
             input,label = train(train_loader, config['epoch'])
             
@@ -87,7 +87,7 @@ def main():
             '''
             np.save('localData/input_arr_'+clientID+'.npy',input)
             np.save('localData/label_arr_'+clientID+'.npy',label)
-            return [[0]], 0, {} #학습 후 parameter 넘기지 않음
+            return [[0]], 0, {} #do not transfer parameter after train
             '''
             #return self.get_parameters(), num_examples, {}
 
