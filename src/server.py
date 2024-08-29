@@ -26,12 +26,12 @@ batch_size = conf['batch_size']
 num_classes = conf['num_classes']
 epochs = conf['epochs']
 num_clients = conf['num_clients']
-round = conf['round'] # round 는 epoch * round로 계산해서 round마다 글로벌 모델 넘기기
+round = conf['round'] # Round is calculated as epoch * round and passes the global model for each round.
 total_itter = epochs*round
 num_client_layer = conf['num_client_layer']
 
 # ######################################################
-# 전송 데이터 로더
+# transfer data loader
 # ######################################################
 def loadData(transformed_inputs,transformed_labels):
   #data loader
@@ -49,7 +49,7 @@ def loadData(transformed_inputs,transformed_labels):
 
 
 # ######################################################
-# 학습
+# train
 # ######################################################
 
 def train(net, trainloader):
@@ -65,13 +65,13 @@ def train(net, trainloader):
       optimizer.step()
       num_examples += labels.size(0)
 
-# client 전송용 모델 파라미터
+# client Model parameters
 def clientNet(net):
   net = splitParameter(net)
   return [val.cpu().numpy() for _, val in net.items()]
 
 # ######################################################
-# weight 분리
+# weight separation
 # ######################################################
 
 def splitParameter(net):
@@ -82,8 +82,8 @@ def splitParameter(net):
     client_layer[name] = val
   return client_layer
 
-# 데이터 로드는 폴더내에서 있는데이터 로드하고 삭제하도록(sequential)
-# epoch*rnd 주기에만 모델 배포하도록 수정
+# Data loading loads and deletes data in the folder (sequential)
+# Modify to deploy model only in epoch*rnd cycle
 
 
 def main():
@@ -99,8 +99,8 @@ def main():
           'epoch':epochs
         }
         
-        # 첫번째 round에는 random init weight 전송
-        # 두번째 round부터 trained weight 전송
+        # Send random init weight in the first round
+        # Transmit trained weight from the second round
         if rnd ==1:
           print('@round 1 : config for initialization')
           return config, None
@@ -110,7 +110,7 @@ def main():
           return config, clientNet(server_net) # strategy로 전달
       return fit_config
     
-    # 학습진행
+   #Learning progress
     def get_eval_fn():
       print('@get_eval')
       def evaluate(t_data,t_label):
@@ -130,9 +130,9 @@ def main():
         on_fit_config_fn = get_on_fit_config_fn(),
         eval_fn = get_eval_fn()
     )
-    # 클라이언트로부터 모델을 전송받지 않아야함 (클라이언트에서 넘겨주지 않음으로 해결)
-    # 서버에서 클라이언트로부터 전송받은 데이터를 순차적으로 학습해야함
-    # 서버에서 클라이언트로 업데이트된 모델 배포 필요함
+    # The model must not be transmitted from the client (solved by not handing it over to the client)
+    # The server must sequentially learn the data sent from the client.
+    # Requires distribution of updated model from server to client
     
     
     # Start server
@@ -141,7 +141,7 @@ def main():
         config={"num_rounds": total_itter},
         strategy=strategy,
     )
- #최종 학습된 parameter는 배포되지 않고 끝남(round 하나 추가해서 처리 가능)
+ #The final learned parameters end without being distributed (can be processed by adding one round)
     with open('parameter.pkl','wb')as f:
       pickle.dump(server_net,f)
     
