@@ -1,18 +1,18 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-# 서버 클라이언트 분리
+# model for client and server
 '''
-전체 모델은 A,B로 분리되어 있음
-클라이언트는 A를 가짐, 데이터 학습 후 서버로 전송
-서버는 A,B를 가짐, 클라이언트로부터 데이터 받으면 B를 학습, 역전파 시에는 A,B모두 참여
-서버는 업데이트된 A를 클라이언트로 배포
+The entire model is separated into A and B
+Client has A, trains data and sends to server
+The server has A and B. When it receives data from the client, it trains B. When backpropagating, both A and B participate.
+Server distributes updated A to clients
 '''
 
-# 서버 모델
+# server model
 '''
-forward함수는 클라이언트로부터 받은 데이터를 중간(B)부터 학습
-forward함수에서만 순전파를 틀어주고, 역전파는 동일하게 로스함수로 적용
+The forward function trains data received from the client from the middle (B).
+Forward propagation is performed only in the forward function, and backpropagation is equally applied as a loss function.
 '''
 class Server_Net(nn.Module):
     def __init__(self): # layer 정의
@@ -51,9 +51,9 @@ class Server_Net(nn.Module):
             num_features *= s
         return num_features
 
-# 클라이언트 모델
+# client model
 '''
-클라이언트 함수는 서버로 학습 결과를 전송하는 역할
+The client function is responsible for transmitting learning results to the server.
 '''
 class Client_Net(nn.Module):
     def __init__(self): # layer 정의
