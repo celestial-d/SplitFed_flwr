@@ -56,7 +56,7 @@ def train(net, trainloader):
   """Train the frozen network on the training set, only one time"""
   criterion = torch.nn.CrossEntropyLoss()
   optimizer = torch.optim.SGD(net.parameters(),lr = learning_rate,momentum=0.9)
-  net.train() # frozen part이기 때문에 eval mode에서 진행
+  net.train() # Since it is a frozen part, proceed in eval mode
   num_examples = 0
   for images, labels in trainloader:
       optimizer.zero_grad()
