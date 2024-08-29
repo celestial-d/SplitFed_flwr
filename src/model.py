@@ -56,7 +56,7 @@ class Server_Net(nn.Module):
 The client function is responsible for transmitting learning results to the server.
 '''
 class Client_Net(nn.Module):
-    def __init__(self): # layer 정의
+    def __init__(self): 
         super(Client_Net, self).__init__()
 
         # input size = 28x28 
