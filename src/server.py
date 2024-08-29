@@ -107,7 +107,7 @@ def main():
         else:
           # load data
           print('@round '+str(rnd)+' : train data')
-          return config, clientNet(server_net) # strategy로 전달
+          return config, clientNet(server_net) # Passed to strategy
       return fit_config
     
    #Learning progress
@@ -116,7 +116,7 @@ def main():
       def evaluate(t_data,t_label):
           print('@train_data')
           loaders = loadData(t_data,t_label)
-          train(server_net,loaders) # config 전달전 학습
+          train(server_net,loaders) # Learning before config delivery
           return None
       return evaluate
 
