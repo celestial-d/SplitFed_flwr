@@ -15,7 +15,7 @@ The forward function trains data received from the client from the middle (B).
 Forward propagation is performed only in the forward function, and backpropagation is equally applied as a loss function.
 '''
 class Server_Net(nn.Module):
-    def __init__(self): # layer 정의
+    def __init__(self): 
         super(Server_Net, self).__init__()
 
         # input size = 28x28 
