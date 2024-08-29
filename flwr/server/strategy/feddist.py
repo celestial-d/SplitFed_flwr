@@ -60,7 +60,7 @@ class FedDist(Strategy):
         on_evaluate_config_fn: Optional[Callable[[int], Dict[str, Scalar]]] = None,
         accept_failures: bool = True,
         initial_parameters: Optional[Parameters] = None,
-        # strategy가 데이터 들고있게 하기
+        # Make strategy hold data
         t_data = None,
         t_label = None,
     ) -> None:
@@ -146,7 +146,7 @@ class FedDist(Strategy):
         if self.on_fit_config_fn is not None:
             # Custom fit config function provided
             config, parameter = self.on_fit_config_fn(rnd)
-        if rnd == 1: # 첫번째 round 회피해서 학습결과 전송
+        if rnd == 1: # Send learning results by avoiding the first round
           fit_ins = FitIns(parameters, config)
         else:
           tensors = [ndarray_to_bytes(ndarray) for ndarray in parameter]
@@ -211,8 +211,8 @@ class FedDist(Strategy):
             print('@ accept_failure')
             return None, {}
         
-        # fit_res에 담긴 parameters를 데이터로 변형하여 넘겨주어야함
-        # 호출하는 strategy함수도 체크
+        # The parameters contained in fit_res must be converted into data and passed on.
+        # Check the strategy function called
         # parameter to weight
         weights = [
             fit_res.parameters for client, fit_res in results
