@@ -118,7 +118,7 @@ class Server:
         log(INFO, "Initializing global parameters")
         self.parameters = self._get_initial_parameters()
 
-        #초기 파라미터 evaluation 과정 제거
+        #Remove the initial parameter evaluation process
         '''
         log(INFO, "Evaluating initial parameters")
         res = self.strategy.evaluate(parameters=self.parameters)
@@ -141,10 +141,9 @@ class Server:
             # Train model and replace previous global model
             t_data, t_label = self.fit_round(rnd=current_round)
             
-            # evaluate 함수에서 데이터 전송 및 학습하도록 구현하기
-            # 기존 config에서 학습하던 부분 제거
-            # config parameter 전송은 유지
-
+            # Implement data transfer and learning in the evaluate function
+            # Remove the part learned from the existing config
+            # Maintain config parameter transmission
             # Evaluate model using strategy implementation
             self.strategy.evaluate(t_data,t_label)
 
@@ -280,10 +279,10 @@ class Server:
         )
 
         
-        # return으로 데이터 전송받음
+        # return received data
         aggregated_result = self.strategy.aggregate_fit(rnd, results, failures)
-        # 결과는 홀수 데이터, 짝수 레이블로 구성되어 있음
-        # 처리하고 서버가 실험 돌릴 수 있도록 구성
+        # The result consists of odd data and even labels
+        # Process and configure the server to run the experiment
         t_data = aggregated_result[0::2]
         t_label = aggregated_result[1::2]
         return t_data,t_label
@@ -328,8 +327,8 @@ class Server:
         # Get initial parameters from one of the clients
         log(INFO, "Requesting initial parameters from one random client")
         random_client = self._client_manager.sample(1)[0]
-        #random client 객체는 추상클래스 client_proxy이며
-        #client_proxy는 GrpcClientProxy로구현돼 있음
+        #random The client object is the abstract class client_proxy.
+        #client_proxy is implemented as GrpcClientProxy
         parameters_res = random_client.get_parameters()
         log(INFO, "Received initial parameters from one random client")
         return parameters_res.parameters
